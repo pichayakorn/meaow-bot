@@ -10,7 +10,7 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+    const command = require(`./commands/${file}`);
   // set a new item in the Collection
   // with the key as the command name and the value as the exported module
   client.commands.set(command.name, command);
@@ -29,28 +29,14 @@ client.on('message', function(message) {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  if (command === 'ping') {
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
-  }
+  if (!client.commands.has(command)) return;
 
-  else if (command === 'hello') {
-    message.channel.send('```yaml\nhello to you too.\n```');
-  }
-
-  if (command === 'coin') {
-    const exampleEmbed = new Discord.MessageEmbed()
-      .setDescription(`${message.author.username} has xx coin`)
-      .setColor('#7289da');
-    message.channel.send(exampleEmbed);
-  }
-
-  if (command === 'rank') {
-    const exampleEmbed = new Discord.MessageEmbed()
-      .setDescription('Your rank is xxx')
-      .setColor('#b12e50');
-    message.reply(exampleEmbed);
-  }
+	try {
+		client.commands.get(command).execute(message, args);
+	} catch (error) {
+		console.error(error);
+		message.reply('there was an error trying to execute that command!');
+	}
 
 });
 
