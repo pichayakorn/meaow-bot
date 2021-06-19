@@ -1,6 +1,7 @@
 // require the discord.js module
 const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
+require('dotenv').config();
+const { prefix } = require('./config.json');
 const fs = require('fs');
 
 // create the discord client
@@ -43,4 +44,4 @@ client.on('message', function(message) {
 });
 
 // login to Discord with your qpp's token
-client.login(token);
+client.login(process.env.TOKEN);
